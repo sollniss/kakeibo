@@ -102,10 +102,7 @@ func (u *transferUsecase) Delete(ctx context.Context, req DeleteRequest) error {
 	return nil
 }
 
-type ListIncomesRequest struct {
-	Month time.Month
-	Year  int
-}
+type ListIncomesRequest = ByMonthRequest
 
 type ListIncomesResponse struct {
 	Incomes []domain.Transfer
@@ -123,10 +120,7 @@ func (u *transferUsecase) ListIncomes(ctx context.Context, req ListIncomesReques
 	}, nil
 }
 
-type ListExpensesRequest struct {
-	Month time.Month
-	Year  int
-}
+type ListExpensesRequest = ByMonthRequest
 
 type ListExpensesResponse struct {
 	Expenses []domain.Transfer
