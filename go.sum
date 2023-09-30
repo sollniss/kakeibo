@@ -2,5 +2,7 @@ github.com/julienschmidt/httprouter v1.3.0 h1:U0609e9tgbseu3rBINet9P48AI/D3oJs4d
 github.com/julienschmidt/httprouter v1.3.0/go.mod h1:JR6WtHb+2LUe8TCKY3cZOxFyyO8IZAc4RVcycCCAKdM=
 github.com/puzpuzpuz/xsync/v2 v2.5.1 h1:mVGYAvzDSu52+zaGyNjC+24Xw2bQi3kTr4QJ6N9pIIU=
 github.com/puzpuzpuz/xsync/v2 v2.5.1/go.mod h1:gD2H2krq/w52MfPLE+Uy64TzJDVY7lP2znR9qmR35kU=
+github.com/sollniss/graceful v0.0.0-20230924070016-c29142d29890 h1:4E/YhB7o7Au9ad0OD5zTtXmC8hN7Y8e36Eg6ssDn3TQ=
+github.com/sollniss/graceful v0.0.0-20230924070016-c29142d29890/go.mod h1:wJ2mE9XdjdZdPKgEqJ5dX7sTDOq9xFs87N90Req45aw=
 github.com/sollniss/resperr v0.0.0-20230424140111-7d502219de2d h1:XyJGWyzNM8ycmpvuOBHU6eu/6WTchGhDMa6ru1pF69s=
 github.com/sollniss/resperr v0.0.0-20230424140111-7d502219de2d/go.mod h1:f3r2de6VdO4hJliRgEiiTSNQTPINo4qLnx2kUFoH4iM=
