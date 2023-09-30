@@ -36,11 +36,11 @@ func NewTransferReader(db *DB) *transferReader {
 func (q *transferReaderQueries) IncomesForMonth(ctx context.Context, month time.Month, year int) ([]domain.Transfer, error) {
 	rows, err := q.db.QueryContext(ctx,
 		`SELECT
-			transfer_id, person, amount, comment, category
+			transfer_id, person, amount, comment, category, transfer_date
 		FROM
 			transfer
 		WHERE
-			WHERE amount > 0 AND MONTH(created_at) = ? AND YEAR(created_at) = ?`, month, year)
+			WHERE amount > 0 AND MONTH(transfer_date) = ? AND YEAR(transfer_date) = ?`, month, year)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			// TODO: return empty slice instead?
@@ -53,7 +53,7 @@ func (q *transferReaderQueries) IncomesForMonth(ctx context.Context, month time.
 	var transfers []domain.Transfer
 	for rows.Next() {
 		var t domain.Transfer
-		err = rows.Scan(&t.TransferID, &t.Person, &t.Amount, &t.Comment, &t.Category)
+		err = rows.Scan(&t.ID, &t.Person, &t.Amount, &t.Comment, &t.Category, &t.Date)
 		if err != nil {
 			return nil, err
 		}
@@ -67,11 +67,11 @@ func (q *transferReaderQueries) IncomesForMonth(ctx context.Context, month time.
 func (q *transferReaderQueries) ExpensesForMonth(ctx context.Context, month time.Month, year int) ([]domain.Transfer, error) {
 	rows, err := q.db.QueryContext(ctx,
 		`SELECT
-			transfer_id, person, amount, comment, category
+			transfer_id, person, amount, comment, category, transfer_date
 		FROM
 			transfer
 		WHERE
-			WHERE amount < 0 AND MONTH(created_at) = ? AND YEAR(created_at) = ?`, month, year)
+			WHERE amount < 0 AND MONTH(transfer_date) = ? AND YEAR(transfer_date) = ?`, month, year)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func (q *transferReaderQueries) ExpensesForMonth(ctx context.Context, month time
 	var transfers []domain.Transfer
 	for rows.Next() {
 		var t domain.Transfer
-		err = rows.Scan(&t.TransferID, &t.Person, &t.Amount, &t.Comment, &t.Category)
+		err = rows.Scan(&t.ID, &t.Person, &t.Amount, &t.Comment, &t.Category, &t.Date)
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				// TODO: return empty slice instead?

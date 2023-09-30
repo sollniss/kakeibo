@@ -34,10 +34,10 @@ func NewTransferWriter(db *DB) *transferWriter {
 func (q *transferWriterQueries) Add(ctx context.Context, t domain.Transfer) error {
 	_, err := q.db.ExecContext(ctx,
 		`INSERT INTO transfer
-			(transfer_id, person, amount, comment, category)
+			(transfer_id, person, amount, comment, category, transfer_date)
 		VALUES
 			(?, ?, ?, ?, ?)`,
-		t.TransferID, t.Person, t.Amount, t.Comment, t.Category)
+		t.ID, t.Person, t.Amount, t.Comment, t.Category, t.Date)
 
 	if err != nil {
 		return err
@@ -54,10 +54,11 @@ func (q *transferWriterQueries) Update(ctx context.Context, t domain.Transfer) e
 			person = ?,
 			amount = ?,
 			comment = ?,
-			category = ?
+			category = ?,
+			transfer_date = ?
 		WHERE
 			transfer_id = ?`,
-		t.Person, t.Amount, t.Comment, t.Category, t.TransferID)
+		t.Person, t.Amount, t.Comment, t.Category, t.Date, t.ID)
 
 	if err != nil {
 		return err

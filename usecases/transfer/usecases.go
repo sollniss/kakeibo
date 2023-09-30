@@ -38,6 +38,7 @@ type AddRequest struct {
 	Amount   int64
 	Comment  string
 	Category string
+	Date     string
 }
 
 type AddResponse struct {
@@ -48,7 +49,7 @@ type AddResponse struct {
 func (u *transferUsecase) Add(ctx context.Context, req AddRequest) (AddResponse, error) {
 	id := u.idGenerator.ID()
 
-	t, err := domain.NewTransfer(id, req.Person, req.Amount, req.Comment, req.Category)
+	t, err := domain.NewTransfer(id, req.Person, req.Amount, req.Comment, req.Category, req.Date)
 	if err != nil {
 		return AddResponse{}, fmt.Errorf("transfer.Add: creating transfer: %w", err)
 	}
@@ -59,7 +60,7 @@ func (u *transferUsecase) Add(ctx context.Context, req AddRequest) (AddResponse,
 	}
 
 	return AddResponse{
-		TransferID: t.TransferID,
+		TransferID: t.ID,
 	}, nil
 }
 
@@ -69,11 +70,12 @@ type UpdateRequest struct {
 	Amount     int64
 	Comment    string
 	Category   string
+	Date       string
 }
 
 // Update updates an existing transfer in the system.
 func (u *transferUsecase) Update(ctx context.Context, req UpdateRequest) error {
-	t, err := domain.NewTransfer(req.TransferID, req.Person, req.Amount, req.Comment, req.Category)
+	t, err := domain.NewTransfer(req.TransferID, req.Person, req.Amount, req.Comment, req.Category, req.Date)
 	if err != nil {
 		return fmt.Errorf("transfer.Update: creating transfer: %w", err)
 	}
