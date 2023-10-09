@@ -19,14 +19,14 @@ type transferWriter interface {
 	Delete(id domain.ID) error
 }
 
-type transferUsecase struct {
+type transferHandler struct {
 	idGenerator    domain.IDGenerator
 	transferReader transferReader
 	transferWriter transferWriter
 }
 
-func NewUsecase(gen domain.IDGenerator, r transferReader, w transferWriter) *transferUsecase {
-	return &transferUsecase{
+func NewHandler(gen domain.IDGenerator, r transferReader, w transferWriter) transferHandler {
+	return transferHandler{
 		idGenerator:    gen,
 		transferReader: r,
 		transferWriter: w,
@@ -46,15 +46,15 @@ type AddResponse struct {
 }
 
 // Add adds a new transfer to the system.
-func (u *transferUsecase) Add(ctx context.Context, req AddRequest) (AddResponse, error) {
-	id := u.idGenerator.ID()
+func (h transferHandler) Add(ctx context.Context, req AddRequest) (AddResponse, error) {
+	id := h.idGenerator.ID()
 
 	t, err := domain.NewTransfer(id, req.Person, req.Amount, req.Comment, req.Category, req.Date)
 	if err != nil {
 		return AddResponse{}, fmt.Errorf("transfer.Add: creating transfer: %w", err)
 	}
 
-	err = u.transferWriter.Add(t)
+	err = h.transferWriter.Add(t)
 	if err != nil {
 		return AddResponse{}, fmt.Errorf("transfer.Add: adding transfer to repository: %w", err)
 	}
@@ -74,13 +74,13 @@ type UpdateRequest struct {
 }
 
 // Update updates an existing transfer in the system.
-func (u *transferUsecase) Update(ctx context.Context, req UpdateRequest) error {
+func (h transferHandler) Update(ctx context.Context, req UpdateRequest) error {
 	t, err := domain.NewTransfer(req.TransferID, req.Person, req.Amount, req.Comment, req.Category, req.Date)
 	if err != nil {
 		return fmt.Errorf("transfer.Update: creating transfer: %w", err)
 	}
 
-	err = u.transferWriter.Update(t)
+	err = h.transferWriter.Update(t)
 	if err != nil {
 		return fmt.Errorf("transfer.Update: updating transfer in repository: %w", err)
 	}
@@ -93,8 +93,8 @@ type DeleteRequest struct {
 }
 
 // Delete deletes an existing transfer from the system.
-func (u *transferUsecase) Delete(ctx context.Context, req DeleteRequest) error {
-	err := u.transferWriter.Delete(req.TransferID)
+func (h transferHandler) Delete(ctx context.Context, req DeleteRequest) error {
+	err := h.transferWriter.Delete(req.TransferID)
 	if err != nil {
 		return fmt.Errorf("transfer.Delete: deleting transfer in repository: %w", err)
 	}
@@ -109,8 +109,8 @@ type ListIncomesResponse struct {
 }
 
 // ListIncomes returns all incomes for the given month and year.
-func (u *transferUsecase) ListIncomes(ctx context.Context, req ListIncomesRequest) (ListIncomesResponse, error) {
-	incomes, err := u.transferReader.IncomesForMonth(req.Month, req.Year)
+func (h transferHandler) ListIncomes(ctx context.Context, req ListIncomesRequest) (ListIncomesResponse, error) {
+	incomes, err := h.transferReader.IncomesForMonth(req.Month, req.Year)
 	if err != nil {
 		return ListIncomesResponse{}, fmt.Errorf("transfer.ListIncomes: reading incomes from repository: %w", err)
 	}
@@ -127,7 +127,7 @@ type ListExpensesResponse struct {
 }
 
 // ListExpenses returns all expenses for the given month and year.
-func (u *transferUsecase) ListExpenses(ctx context.Context, req ListExpensesRequest) (ListExpensesResponse, error) {
+func (u transferHandler) ListExpenses(ctx context.Context, req ListExpensesRequest) (ListExpensesResponse, error) {
 	expenses, err := u.transferReader.ExpensesForMonth(req.Month, req.Year)
 	if err != nil {
 		return ListExpensesResponse{}, fmt.Errorf("transfer.ListExpenses: reading expenses from repository: %w", err)

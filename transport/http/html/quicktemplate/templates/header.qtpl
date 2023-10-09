@@ -1,0 +1,22 @@
+{% stripspace %}
+{% import "time" %}
+
+{% code
+type Header struct {}
+%}
+
+{% func (h *Header) Header(current string, month time.Time) %}
+<header class="header">
+	<div class="header__content">
+		<a id="nav-prev" class="header__btn header__btn--left btn" href="/{%s current %}/{%s month.AddDate(0, -1, 0).Format("2006/01") %}#bottom">
+			<img class="btn__icon" src="/static/img/arrow_left.svg">
+		</a>
+		<div class="header__heading">{%s current %}</div>
+		<a id="nav-next" class="header__btn header__btn--right btn" href="/{%s current %}/{%s month.AddDate(0, 1, 0).Format("2006/01") %}#bottom">
+			<img class="btn__icon" src="/static/img/arrow_right.svg">
+		</a>
+	</div>
+</header>
+{% endfunc %}
+
+{% endstripspace %}

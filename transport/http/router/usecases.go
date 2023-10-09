@@ -12,4 +12,8 @@ type TransferServer interface {
 	Delete(ctx context.Context, req transfer.DeleteRequest) error
 	ListIncomes(ctx context.Context, req transfer.ListIncomesRequest) (transfer.ListIncomesResponse, error)
 	ListExpenses(ctx context.Context, req transfer.ListExpensesRequest) (transfer.ListExpensesResponse, error)
+
+	ViewIndex(ctx context.Context) (transfer.ViewListExpensesResponse, error)
+	ViewListIncomes(ctx context.Context, req transfer.ListIncomesRequest) (transfer.ViewListIncomesResponse, error)
+	ViewListExpenses(ctx context.Context, req transfer.ListExpensesRequest) (transfer.ViewListExpensesResponse, error)
 }

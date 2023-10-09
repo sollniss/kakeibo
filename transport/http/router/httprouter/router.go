@@ -1,6 +1,7 @@
 package httprouter
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -12,14 +13,28 @@ import (
 	"github.com/sollniss/kakeibo/usecases/transfer"
 )
 
-func NewRouter(ts router.TransferServer, views html.Views) *httprouter.Router {
+type hrouter struct {
+	*httprouter.Router
+}
+
+func NewRouter(ts router.TransferServer, views html.Views) hrouter {
 	mux := httprouter.New()
 	mux.HandleMethodNotAllowed = false
 
-	mux.Handler("GET", "/expenses/:year/:month", httputil.QueryHandler(urlMonthParser, ts.ListExpenses, views.ExpensesByMonth, views.Error))
-	mux.Handler("GET", "/incomes/:year/:month", httputil.QueryHandler(urlMonthParser, ts.ListIncomes, views.IncomesByMonth, views.Error))
+	mux.Handler("GET", "/", httputil.Handler(ts.ViewIndex, views.Index, views.Error))
+	mux.Handler("GET", "/expenses/:year/:month", httputil.QueryHandler(urlMonthParser, ts.ViewListExpenses, views.ExpensesByMonth, views.Error))
+	mux.Handler("GET", "/incomes/:year/:month", httputil.QueryHandler(urlMonthParser, ts.ViewListIncomes, views.IncomesByMonth, views.Error))
 
-	return mux
+	fs, err := views.Static()
+	if err != nil {
+		// TODO: should we really panic here?
+		panic(fmt.Errorf("httprouter.NewRouter: could not access static files: %w", err))
+	}
+	if fs != nil {
+		mux.ServeFiles("/static/*filepath", fs)
+	}
+
+	return hrouter{mux}
 }
 
 func urlMonthParser(w http.ResponseWriter, r *http.Request) (transfer.ByMonthRequest, error) {

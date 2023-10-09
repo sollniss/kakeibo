@@ -60,15 +60,31 @@ func (noopTransferUsecase) ListExpenses(ctx context.Context, req transfer.ListEx
 	return transfer.ListExpensesResponse{}, nil
 }
 
+func (noopTransferUsecase) ViewIndex(ctx context.Context) (transfer.ViewListExpensesResponse, error) {
+	return transfer.ViewListExpensesResponse{}, nil
+}
+
+func (noopTransferUsecase) ViewListIncomes(ctx context.Context, req transfer.ListIncomesRequest) (transfer.ViewListIncomesResponse, error) {
+	return transfer.ViewListIncomesResponse{}, nil
+}
+
+func (noopTransferUsecase) ViewListExpenses(ctx context.Context, req transfer.ListExpensesRequest) (transfer.ViewListExpensesResponse, error) {
+	return transfer.ViewListExpensesResponse{}, nil
+}
+
 type noopFrontend struct{}
 
-func (noopFrontend) ExpensesByMonth(w http.ResponseWriter, r *http.Request, res transfer.ListExpensesResponse) {
+func (noopFrontend) Static() (http.FileSystem, error) {
+	return nil, nil
 }
 
-func (noopFrontend) IncomesByMonth(w http.ResponseWriter, r *http.Request, res transfer.ListIncomesResponse) {
+func (noopFrontend) ExpensesByMonth(w http.ResponseWriter, r *http.Request, res transfer.ViewListExpensesResponse) {
 }
 
-func (noopFrontend) Index(w http.ResponseWriter, r *http.Request, resp transfer.ListExpensesResponse) {
+func (noopFrontend) IncomesByMonth(w http.ResponseWriter, r *http.Request, res transfer.ViewListIncomesResponse) {
+}
+
+func (noopFrontend) Index(w http.ResponseWriter, r *http.Request, resp transfer.ViewListExpensesResponse) {
 }
 
 func (noopFrontend) Error(w http.ResponseWriter, r *http.Request, err error) {

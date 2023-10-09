@@ -31,7 +31,7 @@ func QueryHandler[Req any, Res any](
 }
 
 // CommandHandler is a handler for usecases without a return value.
-func CommandHandler[Req any, Res any](
+func CommandHandler[Req any](
 	requestReader func(w http.ResponseWriter, r *http.Request) (Req, error),
 	handler func(ctx context.Context, req Req) error,
 	reponseWriter func(w http.ResponseWriter, r *http.Request),
@@ -51,5 +51,22 @@ func CommandHandler[Req any, Res any](
 		}
 
 		reponseWriter(w, r)
+	}
+}
+
+func Handler[Res any](
+	handler func(ctx context.Context) (Res, error),
+	reponseWriter func(w http.ResponseWriter, r *http.Request, res Res),
+	errorHandler func(w http.ResponseWriter, r *http.Request, err error),
+) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		res, err := handler(r.Context())
+		if err != nil {
+			errorHandler(w, r, err)
+			return
+		}
+
+		reponseWriter(w, r, res)
 	}
 }

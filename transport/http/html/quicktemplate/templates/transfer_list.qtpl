@@ -1,0 +1,74 @@
+{% stripspace %}
+{% import "time" %}
+{% import "github.com/sollniss/kakeibo/domain" %}
+{% import "github.com/sollniss/kakeibo/usecases/transfer" %}
+
+{% code
+type TransferList struct {
+	Base
+	Header
+	Footer
+
+	Transfers []domain.Transfer
+	Current string
+	Data transfer.ViewListData
+}
+%}
+
+{% func (t *TransferList) Body() %}
+{%= t.Header(t.Current, t.Data.Month) %}
+<div class="content">
+	{%code
+		start := time.Time{}
+		current := start
+	%}
+
+	{% for _, trans := range t.Transfers %}
+		{% if !trans.Date.Equal(current) %}
+			<div class="list__heading">
+				{%s japaneseDays.Replace(trans.Date.Format("1月2日（Mon）")) %}
+				<span class="list__details">
+					{% if t.Data.DaySums[trans.Date.Unix()] >= 0 %}
+						{%dl t.Data.DaySums[trans.Date.Unix()] %}
+					{% else %}
+						{%dl -t.Data.DaySums[trans.Date.Unix()] %}
+					{% endif %}
+				</span>
+			</div>
+
+			{%code
+				current = trans.Date
+			%}
+		{% endif %}
+
+		<div class="list" id="{%s trans.Date.Format("2006-01-02") %}">
+			<label class="list__elem accordion" for="{%s t.Current %}-{%dul uint64(trans.ID) %}-item" id="{%s t.Current %}-{%dul uint64(trans.ID) %}">
+			<input class="accordion__switch" id="{%s t.Current %}-{%dul uint64(trans.ID) %}-item" type="checkbox">
+				<div class="accordion__col1">
+					<div class="cat-icon{% space %}{%s t.Current %}-color12">
+						<img class="cat-icon__img" src="/static/img/icons/{%s t.Current %}-12.svg" alt="食費">
+					</div>
+				</div>
+				<div class="accordion__col2">
+					{% if trans.Amount >= 0 %}
+						{%dl trans.Amount %}
+					{% else %}
+						{%dl -trans.Amount %}
+					{% endif %}
+				</div>
+				<div class="accordion__col3 accordion__content--mobile">{%s trans.Comment %}</div>
+				<div class="accordion__col4">
+					<span class="person person--color2">D</span>
+				</div>
+				<div class="accordion__content">
+					<a class="modal__open accordion__btn" data-modal="edit" data-target="/{%s t.Current %}/2970" data-date="2023-10-02" data-amount="1181" data-type="12" data-person="2" data-comment="ランチ、シリアル、ライフ">編集</a>
+					<a class="modal__open accordion__btn" data-modal="delete" data-target="/{%s t.Current %}/2970">削除</a>
+				</div>
+			</label>
+		</div>
+	{% endfor %}
+</div>
+{%= t.Footer(t.Current, t.Data.Month) %}
+{% endfunc %}
+
+{% endstripspace %}

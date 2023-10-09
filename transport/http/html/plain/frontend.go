@@ -13,6 +13,10 @@ func NewFrontend() plainFrontend {
 	return plainFrontend{}
 }
 
+func (f plainFrontend) Static() (http.FileSystem, error) {
+	return nil, nil
+}
+
 func (f plainFrontend) Index(w http.ResponseWriter, r *http.Request, res transfer.ListExpensesResponse) {
 	for _, expense := range res.Expenses {
 		w.Write([]byte(strconv.FormatInt(expense.Amount, 10) + "円 " + expense.Comment + "\r\n"))

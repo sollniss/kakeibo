@@ -8,4 +8,7 @@ require (
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/puzpuzpuz/xsync/v2 v2.5.1
 	github.com/sollniss/graceful v0.0.0-20230924070016-c29142d29890
+	github.com/valyala/quicktemplate v1.7.0
 )
+
+require github.com/valyala/bytebufferpool v1.0.0 // indirect

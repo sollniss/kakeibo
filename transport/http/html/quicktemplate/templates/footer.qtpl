@@ -1,0 +1,37 @@
+{% stripspace %}
+{% import "time" %}
+
+{% code
+type Footer struct {}
+%}
+
+{% func (h *Footer) Footer(current string, month time.Time) %}
+<footer class="footer">
+	<div class="footer__content">
+		{% if current == "expenses" %}
+			<a class="footer__btn btn btn--active">
+				<img class="btn__icon" src="/static/img/expenses.svg" alt="支出">
+			</a>
+		{% else %}
+			<a class="footer__btn btn" href="/expenses/{%s month.Format("2006/01") %}#bottom">
+				<img class="btn__icon" src="/static/img/expenses.svg" alt="支出">
+			</a>
+		{% endif %}
+
+		{% if current == "incomes" %}
+			<a class="footer__btn btn btn--active">
+				<img class="btn__icon" src="/static/img/income.svg" alt="収入">
+			</a>
+		{% else %}
+			<a class="footer__btn btn" href="/incomes/{%s month.Format("2006/01") %}#bottom">
+				<img class="btn__icon" src="/static/img/income.svg" alt="収入">
+			</a>
+		{% endif %}
+	</div>
+	
+	<div class="footer__cutout"></div>
+	<a class="modal__open footer__btn--main" data-modal="add" data-target="/{%s current %}">+</a>
+</footer>
+{% endfunc %}
+
+{% endstripspace %}

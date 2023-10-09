@@ -1,0 +1,37 @@
+{% stripspace %}
+
+{% interface
+Layout {
+	Title()
+	Body()
+}
+%}
+
+{% code
+type Base struct {
+	SubTitle string
+}
+%}
+{% func (b *Base) Title() %}{%s b.SubTitle %}{% endfunc %}
+
+{% func Page(l Layout) %}
+<!doctype html>
+<html lang="ja">
+
+	<head>
+		<title>{%= l.Title() %}{% space %} | 家計簿</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="robots" content="noindex" />
+		<link rel="icon" type="image/x-icon" href="/common/favicon.ico">
+		<link rel="stylesheet" href="/static/css/main.css">
+	</head>
+
+	<body>
+		{%= l.Body() %}
+	</body>
+
+</html>
+{% endfunc %}
+
+{% endstripspace %}
